@@ -1,0 +1,161 @@
+Python is a powerful scripting language that allows for a wide variety of case uses. For example, Python can be used for data learning, automation, back-end development, data analysis – the uses are truly endless. The main point of this article will touch on automation, as automation through Python via Selenium has changed the game of automation or as others refer to it as botting.
+
+
+What is Selenium? Why does it work so well with Python?
+
+Selenium allows Python to control various web browsers. Whether it be Google Chrome, Mozilla Firefox, or even Internet Explorer. What makes Selenium different from the web browser controller of VB.NET or VB6 is that plugins and profiles can be customized and scripts can be injected into the browser itself to further improve automation. Obviously Selenium can be imported into Visual Studio, but what makes the Selenium package through Python so much different is its cross-platform abilities.
+
+Being able to use Selenium on not only Windows, MacOS, and Linux is huge due to accessibility. For example, coding a project on Windows and being able to move it to an Ubuntu VPS is remarkably simplistic. Due to the fact that a Linux VPS has 99.99% uptime, costs next to nothing, and doesn’t require constant attention. While it used to be in order to run browser automated applications, a Windows VPS would be required due to VB.NET’s inability to be truly cross-platform capable.
+
+
+Selenium Installation
+
+Enough about Selenium’s abilities, it’s time to jump into installing and using Selenium. The prerequisites for this is a Linux VPS loaded with Ubuntu 18.04, Python 3, and Mozilla Firefox (geckodriver). Mozilla Firefox is chosen due to Mozilla Firefox’s nature in allowing development. As Google Chrome has become more increasingly non-developer friendly and Internet Explorer isn’t as flexible.
+
+First and foremost, since Ubuntu 18.04 is being used, Python 3 is pre-installed. However, using Ubuntu 16.10 or newer, installing Python 3 is simply done by running these commands at terminal:
+
+sudo apt-get update
+
+sudo apt-get install python3.6
+
+Once Python 3.6 is available for use, it’s time to install pip. Pip will allow the ability to install the necessary bindings. Installing can be done by executing the following commands:
+
+sudo apt-get update
+
+sudo apt-get install python3-pip
+
+Now Selenium can be installed:
+
+sudo pip3 install selenium
+
+Another method or installation is as follows:
+
+sudo python3 -m pip install selenium
+
+
+Gecko Installation
+
+Since the selenium installation doesn't include geckodriver; installation can be done using these commands:
+
+wget https://github.com/mozilla/geckodriver/releases/download/v0.20.1/geckodriver-v0.20.1-linux64.tar.gz
+
+tar xvfz geckodriver*
+
+chmod +x geckodriver
+
+sudo mv geckodriver /usr/local/bin/
+
+export PATH=$PATH:/ usr/local/bin/geckodriver
+
+A quick rundown of what’s occurring in these commands:
+
+1. wget grabs the geckodriver.
+2. tar xvfz extracts geckodriver.
+3. chmod +x makes it geckodriver an executable.
+4. mv geckodriver moves the now executable to the user’s local folder.
+5. export PATH adds geckodriver to the operating system’s environment.
+
+Before continuing, it’s important to verify geckodriver has been truly installed and is accessible. Running the following command will do just that:
+
+whereis geckodriver
+
+The following output should occur:
+
+geckodriver: /usr/local/bin/geckodriver
+
+
+Mozilla Firefox Installation
+
+With Python 3, pip, selenium, and geckodriver installed. It’s now time to install Firefox in order for geckodriver to function properly and thus selenium:
+
+sudo apt-get install firefox
+
+Once again, verifying installation:
+
+whereis firefox
+
+Running the following command will do as well:
+
+firefox --version
+
+
+Selenium Test Run
+
+With everything installed, the time has come to test Selenium. Run the following command to launch a text editor in terminal:
+
+nano main.py
+
+Now with the text editor open and paste this into the terminal window:
+
+from selenium import webdriver
+
+from selenium.webdriver.firefox.options import Options
+
+
+
+options = Options()
+
+options.add_argument("--headless")
+
+driver = webdriver.Firefox(firefox_options=options)
+
+print(driver.title)
+
+driver.quit()
+
+Once saved, it’s easy to run the python script by executing the following:
+
+python3 main.py
+
+Your output should resemble the following:
+
+By outputting the text “Google”, that means Selenium was successful in opening Firefox headless, loading Google’s home page, and resulted in outputting the title of the page.
+
+Why Headless?
+
+It’s important to know that running Firefox headless means the browser is running without having a graphical user interface. Running non-headless can result in errors, due to a Linux VPS not having an actual graphical interface to interactive with. Does that mean it has to run headless? Not necessarily. The installation of xvfb along with x11vnc can give one the ability to run an actual GUI in order to debug further.
+
+How can this be automation?
+
+Given the fact that Python 3, along with Selenium, gives the ability to instruct a browser – whether it be Google Chrome, Mozilla Firefox, or Internet Explorer – the possibilities are truly endless. Want to see the national student debt go up every second? Not a problem:
+
+from selenium import webdriver
+
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+from selenium.webdriver.firefox.options import Options
+
+import time
+
+
+
+capabilities = DesiredCapabilities.FIREFOX
+
+capabilities["marionette"] = True
+
+options = Options()
+
+options.add_argument("--headless")
+
+driver = webdriver.Firefox(firefox_options=options, capabilities=capabilities)
+
+driver.get('https://studentdebtclock.org')
+
+while True:
+
+               debt = driver.find_element_by_class_name("slogan").text
+
+               print("Current Student Debt:", debt)
+
+               time.sleep(1)
+
+driver.quit()
+
+As you can see, it opens Firefox, loads the Student Debt Clock page, and starts outputting to the console in real time:
+
+
+End
+
+It can be seen that Python 3 along with Selenium is quite powerful. Being able to grab an element on a static HTML page, while JavaScript updates such element, and being able to output such to console? That’s phenomenal. Selenium can not only grab an element's text while being updated by JavaScript, but it can log into websites, scrap pages, and various other things. Which is why Selenium makes a great choice for automation with Python.
+
+Successful Publication on May 31, 2018 - https://www.linkedin.com/pulse/browser-automation-python-james-h-/

@@ -1,0 +1,86 @@
+Introduction
+
+Purpose of this article is simply to educate the repercussions of Cross Site Scripting through hypothetical situations that are all too real. All too often have security researchers been told there is no security threat in relation to Cross Site Scripting. Which when such findings from security researchers are found, they have simply been put on the back burner to be dealt with later or not at all. Leaving users of the vulnerable platform(s) at risk.
+
+
+What is Cross Site Scripting?
+
+Before endeavoring into the dangers of Cross Site Scripting, it’s important to understand what Cross Site Scripting or XSS exactly is. In laymen’s terms – XSS simply refers to foreign code that’s injected into a legitimate website or web app.
+
+XSS simply refers to foreign code that’s injected into a legitimate website or web app
+This foreign code alters the existing code, that’s used to render the website, into enabling the foreign code to be executed. While many would refer to said “foreign code” as “malicious code” – it’s quite the contrary. Due to the fact that not all code is intentionally malicious. In fact, security researchers are not injecting foreign code into the website to be malicious, but only to make it apparent there’s a security vulnerability present.
+
+As there are different types of XSS vulnerabilities, such as reflective, stored, or DOM based, the difference in terms of security is redundant. For specificity and simplicity, this article will focus on the dangers of reflective XSS. With that being said, our test subject for today will be K7 Computing. K7 Computing is a computer software company founded in 1990, and is, ironically, known for their award-winning antivirus software and internet security.
+
+
+Getting Down to Brass Tacks
+
+Begin by opening Mozilla. By visiting the URL:
+
+https://updates.k7computing.com/K7BizEd/myaccount/ForgotPwd.aspx?flvrid=&pid=
+It can be seen it’s a simple “Forgot Password” page. Where by entering a registered e-mail, a password reset can be conducted.
+
+Making a few modifications to the URL, the page can be altered. For example, by visiting the URL:
+
+http://updates.k7computing.com/K7BizEd/myaccount/ForgotPwd.aspx?flvrid=&pid=">Click%20here%20to go
+
+It results in the text next to the “submit” button being changed to “Click here to go">Back to My Account”. It can also be seen that the image in the top left hand corner is broken as well.
+
+
+A Little Explanation
+
+Let’s begin by opening the inspect element tool of Mozilla Firefox. Doing so will allow a better understanding of what’s happening behind the scenes. This can be done by right clicking “Back to My Account” and selecting “Inspect Element”.
+
+
+Once the window appears, it can be seen by what’s highlighted, that the code has not been altered. Doing the same steps described above for the second link, it can be seen that the code has been altered, which is allowing for foreign code to be executed.
+
+
+Getting Artsy
+
+Obviously the foreign code above wasn't anything special. It shows that the page can be altered and is vulnerable. What if the page could be altered to appear legitimate and even redirect upon overing over the page? It’s possible with the combination of CSS and JavaScript.
+
+In order to do just that, opening Mozilla Firefox and by visiting this URL:
+
+https://updates.k7computing.com/K7BizEd/myaccount/ForgotPwd.aspx?flvrid=&pid=%22%20style=%22width:%20100%;background:%20url(https://i.imgur.com/1XVvZke.png),%20url(https://i.imgur.com/2oyX6Rl.png),%20url(https://i.imgur.com/9mdEsme.png);position:%20fixed;height:%20100%;top:%200px;text-indent:%20-9999px;left:%200px;background-repeat:%20no-repeat,%20no-repeat,%20repeat;background-position:%203%%207%%20,%2050%%2050%,%200px%200px;%22%20onclick="return false"%20onmouseover=%22window.location.replace(%27https://www.openbugbounty.org/reports/328602/%27);%22%3E
+
+It'll give a page with K7’s blue background found on their 404 page, with a logo in the top left corner, and upon trying to click the page will result in being redirect to the report page on Open Bug Bounty.
+
+It can be seen that this has quickly escalated from a simple vulnerability being found, to a page that looks legitimate and redirects. Not only can this be altered to perform other functions, but it truly is a security vulnerability.
+
+
+Deciphering Art
+
+Diving a little deeper, let’s take a look at exactly what’s going on. First the URL needs to be decoded in order to read it. Decoding it gives the following:
+
+https://updates.k7computing.com/K7BizEd/myaccount/ForgotPwd.aspx?flvrid=&pid=" style="width: 100%;background: url(https://i.imgur.com/1XVvZke.png), url(https://i.imgur.com/2oyX6Rl.png), url(https://i.imgur.com/9mdEsme.png);position: fixed;height: 100%;top: 0px;text-indent: -9999px;left: 0px;background-repeat: no-repeat, no-repeat, repeat;background-position: 3% 7% , 50% 50%, 0px 0px;" onclick="return false" onmouseover="window.location.replace('https://www.openbugbounty.org/reports/328602/');">
+
+Starting at “pid=”, there is a single quote that simply ends the HREF link, giving the ability to start the styling part. Below are two screenshots: one showing the single quote in the URL and the same quote in the developer tools window.
+
+Moving onto the styling of the page, which gives the page its background, text, and even logo. First the HREF tag needs to be extended across the page in an attempt to display just that element and nothing more. The “width: 100%;” and “height: 100%;” do just that. Next step is to position the HREF element front and center by adding “top: 0px;”, “left: 0px;”, and “position: fixed;”.
+
+Finally, the background, logo, and text can be added. Since K7 Computing is using ASP.NET, the text can’t be added using a traditional p element (<p> Don't mind us, we're just trying to redirecting you</p><br/><p>Not working? Click here to continue!) and results in having to use strictly images. Which isn’t a problem, as the CSS background property allows just that: “background: url(https://i.imgur.com/1XVvZke.png), url(https://i.imgur.com/2oyX6Rl.png), url(https://i.imgur.com/9mdEsme.png);”.
+
+The first image is the logo, second image is the text, and last is the actual background. As there are a multitude of images, it’s important to position these images across the page using the background-position property “background-position: 3% 7% , 50% 50%, 0px 0px;”. To prevent the browser from repeating each image across the page, the background-repeat property comes into play: “background-repeat: no-repeat, no-repeat, repeat”. Each comma inside the background-position and background-repeat property aliens with the corresponding image present in the background property.
+
+Last but not least, the text “Back to My Account” needs to be removed from the page. Simply adding “text-indent: -9999px;” results in the text disappearing from page.
+
+Here comes the part where the page is redirected and unclick-able by the use of JavaScript. In order to make the page unclick-able the “onclick="return false"” allows just that. This prevents actual function for which the HREF’s purpose is. To redirect the page, “onmouseover="window.location.replace('https://www.openbugbounty.org/reports/328602/');"” allows this once the mouse is hovering over the page.
+
+
+Conclusion
+
+XSS vulnerabilities are a real security threat and shouldn't be taken with a grain of salt. By using one's imagination a simple vulnerability can become something that appears legitimate and redirects without user interaction - as demonstrated in this article.
+
+While there are companies such as Google and Microsoft taking proper security measures by embedding an XSS Auditor into their browsers, it's sometimes just not enough. As there are XSS vulnerabilities which allow the execution of inline JavaScript and are capable of being executed on various browsers, whether an XSS Auditor is present or not. It's truly up to the development team behind the website to take the necessary steps in preventing the execution of arbitrary code.
+
+
+Quick Disclaimer
+
+Now in an effort to be as transparent as possible, this vulnerability was already reported on October 8th, 2017. In accordance to Open Bug Bounty’s policy, it was 
+publicly disclosed on March 31st, 2018. K7 Computing was not only notified by the use of their Support Center, but contacted through e-mail by Open Bug Bounty – both of which were ignored. More information can be found on the Open Bug Bounty report:
+
+https://www.openbugbounty.org/reports/328602/
+
+Once again, this article is to educate on the dangers of XSS vulnerabilities.
+
+Successful Publication on May 30, 2018 - https://www.linkedin.com/pulse/underlying-dangers-cross-site-scripting-james-h-/

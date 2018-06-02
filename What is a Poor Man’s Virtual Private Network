@@ -1,0 +1,12 @@
+Virtual Private Networks are amazing at keeping your anonymity while browsing the Internet. Both a traditional VPN and a Poor Man's VPN have their own pros and cons. As a Poor Man's VPN can be used virtually anywhere and is quick to setup on Linux, Windows, and Mac OSX. Why is it dubbed a “Poor Man’s Virtual Private Network” though? That’s simply due to the protocol being used, SSH, and the inability to route complete system traffic through; without additional software.
+
+Poor Man’s Virtual Private Networks I’ve found have been cost effective, easy to use, and quick to setup. Many would disagree, as you’re having to setup each application’s network settings to tunnel through the SSH connection. Which simply isn’t true. Using additional software such as Proxifier or ProxyCap, you can setup all your applications to use your SSH connection quickly and effectively.
+
+
+I’ll admit that I’ve found that a Poor Man’s VPN has a sense of flexibility that a VPN doesn’t. In some instances, a VPN can cut off due to a various number of reasons. Whether those reasons be operator error, software malfunction, or simply improper setup – it can pose a huge problem – allowing all traffic to go through without being anonymized. Using Proxifier alongside a Poor Man’s VPN or even manually setting an application’s network settings, connections are completely nulled if the SSH connection is terminated.
+
+Does this mean VPNs don’t have a place? Why isn’t everyone using a Poor Man’s VPN? Well, VPNs are great for commercial usage. As VPNs allow employees to traveling abroad, but still use local business resources such as files or printers; without worrying about snoopers. Not only are VPNs great for businesses, but they’re kick-ass when coupled with open-source router firmware such as DDWRT or Tomato. Just imagine having a router that’s always protecting your anonymity no matter what device you’re on, that’s what a VPN + DDWRT for example has to offer.
+
+When it comes down to it though, it’s all about personal preference and your individual browsing needs. Whether it be a Poor Man’s VPN or a standard VPN, at least your protected from prying eyes. With MiM attacks increasingly becoming an issue in today’s society, protecting yourself is what’s important in today’s day-in-age.
+
+Successful Publication on November 12, 2016 - https://www.linkedin.com/pulse/what-poor-mans-virtual-private-network-james-herrick/
